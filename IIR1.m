@@ -27,6 +27,7 @@ N=ceil(acosh(sqrt(D2)/epsilon)/acosh(omega_s/omega_p));
 coeff=zeros(1,N+1);
 syms x;
 cheby_coeffs=double(coeffs(chebyshevT(5,x)));
+cheby_coeffs=fliplr(cheby_coeffs);
 for i=1:1:N/2+1
     coeff(2*i-1)=cheby_coeffs(i);
 end
@@ -35,3 +36,16 @@ denominator=epsilon^2*conv(coeff,coeff);
 denominator(end)=denominator(end)+1;
 
 H_s_2=tf([1],denominator);
+
+poles_H_s_2=1i*roots(denominator);
+
+poles=[];
+for i=1:2*N
+    if real(poles_H_s_2(i))<0
+        poles=[poles,poles_H_s_2(i)];
+    end
+end
+
+H_S=zpk([],poles,1);
+
+
