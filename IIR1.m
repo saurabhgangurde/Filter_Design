@@ -46,6 +46,18 @@ for i=1:2*N
     end
 end
 
-H_S=zpk([],poles,1);
+transformed_poles=[];
 
+for j=1:N
+    
+    new_roots=roots([1,-1*B*poles(j),omega0_2]);
+   transformed_poles=[transformed_poles,new_roots(1),new_roots(2)];  
+end
+  
+numerator=zeros(1,N+1);
+numerator(1)=B^N;
+Hbandpass=zpk([],transformed_poles,1);
 
+[num,denom]=tfdata(sysd,'v');
+
+freqz(num,denom);
