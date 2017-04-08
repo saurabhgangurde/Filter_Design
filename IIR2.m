@@ -38,7 +38,29 @@ for j=0:N-1
     poles=[poles, 1i*omega_c*exp(1i*pi/(2*N)*(2*j+1))];
 end
 
-poles_Bandpass=[];
+
+transformed_poles=[];
+
+
+for j=1:N
+    
+    new_roots=roots([1,-1*B/poles(j),omega0_2]);
+   transformed_poles=[transformed_poles,new_roots(1),new_roots(2)];  
+end
+
+numerator=conv([1,0,omega0_2],[1,0,omega0_2]);
+
+for j=1:N-1
+    numerator=conv(numerator,[1,0,omega0_2]);
+end
+
+Hbandpass=zpk([],transformed_poles,1)*tf(numerator,1);
+
+bode(Hbandpass);
+
+sysd=c2d(Hbandpass,1/90,'tustin');
+[num,denom]=tfdata(sysd,'v');
+freqz(num,denom);
 
 
 

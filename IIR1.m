@@ -56,8 +56,10 @@ end
   
 numerator=zeros(1,N+1);
 numerator(1)=B^N;
-Hbandpass=zpk([],transformed_poles,1);
+Hbandpass=zpk([],transformed_poles,1)*tf(numerator,1);
 
+bode(Hbandpass);
+
+sysd=c2d(Hbandpass,1/140,'tustin');
 [num,denom]=tfdata(sysd,'v');
-
 freqz(num,denom);
